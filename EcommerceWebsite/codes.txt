@@ -1,0 +1,81 @@
+to install django:-
+pip install django
+
+to check version of django:-
+python -m django --version
+
+to create a new django project:-
+1.create new project on pycharm
+2.open pycharm terminal and type:-
+python django-admin startproject 'project_name'
+
+to run the django server:-
+python manage.py runserver
+
+urls.py:-
+in this file all the urls are stored.
+
+views.py:-
+in this file we write functions for the url.
+
+templates folder:-
+in this folder we store all the html files.
+this folder should be created in the django project folder
+ex.:- MyProject/DjangoProject/templates
+
+
+to create an app in our django project:-
+python manage.py startapp 'app_name'
+
+whenever we create an app:
+we should create urls.py file in it. because it is not availble bydefualt
+
+to create an admin for the project:-
+an admin can view database also
+python manage.py createsuperuser
+
+
+python manage.py makemigrations:-
+this command stores all the changes done in the project into the migrations folder.
+
+python manage.py migrate:-
+this command commits the changes stored in migrations folder that were created using the above command.
+
+models.py:-
+in this file we create and store the database tables.
+
+admin.py:-
+a database table is'nt loaded until we register the table in this file.
+in this file we register the tables created in the models.py file.
+
+include():-
+this function is used when we want to redirect the url to the app url.
+i.e:- path('shop/',include('shop.urls'))
+example::- google.com/shop
+here shop is an app.
+urls.py in the shop app folder will handle the request further.
+
+static:-
+static is a folder that has all the static text files,images,etc. that doesnt come from database.
+eg:- MyProject/DjangoProject/static folder
+
+note:-a project containing apps will have their own static folder in their directory.
+
+python shell commands on command prompt:-
+to fetch a table from the database:
+from 'app_name'.models import 'class_name'
+
+to insert a record in table:
+'var_name'='table_name' (column1_name="value",column2_name="value",columnn_name="value") #to create
+var_name.save() #to insert in db.
+
+fetch a particular column:-
+var_name.column_name
+
+to wrrite python code in html file:-
+{% write here %}
+
+to inherit an html file:-
+{%extends 'filename.html''%}
+this will bring all contents the of that file in to the new file.
+

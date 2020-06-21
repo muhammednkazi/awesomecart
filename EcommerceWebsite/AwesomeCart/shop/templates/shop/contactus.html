@@ -1,0 +1,38 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %} Contact Us{% endblock %}
+{%block body %}
+<div class="container mt-2">
+    <h2 class="text-center">Contact Us</h2>
+<form action="/shop/contactus/" method="post">{% csrf_token %}
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" name="name" id="name" placeholder="Enter Your Name">
+    </div>
+    <label for="email">Email address</label>
+    <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+
+  <div class="form-group">
+    <label for="phone">Phone Number</label>
+    <input type="tel" class="form-control" name="phone" id="phone" placeholder="Phone">
+  </div>
+  <div class="form-group">
+    <label for="desc">How we may help You?</label>
+    <textarea class="form-control" id="desc" name="desc" rows="3"></textarea>
+  </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
+    </div>
+{%endblock%}
+
+
+{%block js%}
+<script>
+{% if thank %} //if query is stored succesffully
+alert('Your Request is Placed Successfully. Your Request Id is {{id}}.'); 
+document.location="/shop"; // redirecting to homepage after storing in database.
+{%endif%}
+</script>
+{% endblock%}

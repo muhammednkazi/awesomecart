@@ -1,0 +1,107 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}Track Your Orders{% endblock %}
+{%block body %}
+<div class="container">
+    <div class="col my-4">
+        <h2 class="text-center">Awesome Cart - Track Your Orders</h2>
+    </div>
+    <div class="col my-4">
+    <h2>Enter Your Order Id & Email Id:</h2>
+        <form action="#" method="post" id="trackerform">{%csrf_token%}
+            <input type="hidden" id="items_json" name="items_json"> <!--this will store cart as string-->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="order_id">Order Id</label>
+                    <input type="text" class="form-control" id="order_id" name="order_id" placeholder="Order Id">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Track Order</button>
+        </form>
+    </div>
+    <div class="col my-4">
+        <h2>Details are Shown Below:-</h2>
+        <div>
+            <ul class="list-group" id="items">
+                <!--Here ordered items will be displayed using javascript-->
+            </ul>
+        </div>
+        <h2>Your Order Details</h2>
+        <div class="my-4">
+            <ul class="list-group" id="itemslist">
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+{%endblock%}
+
+{%block js%}
+<script>
+    $('#trackerform').submit(function(event){ //when submit button is clicked, this function will run
+        $('#items').empty(); //clearing the previously displayed order details, if any
+        $('#itemslist').empty(); //clearing the previously displayed order details, if any
+        //below we are creating dictionary(json) of values to be submitted
+        var formdata={'order_id':$('input[name=order_id]').val(),
+                    'email':$('input[name=email]').val(),
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val()
+                    };
+    
+
+        //we dont want to reload our page, so we are using ajax
+        $.ajax({
+            type:'POST', //method of form
+            url: '/shop/track/', //action of form
+            data:formdata, //data to  be sent
+            encode:true
+        })
+        .done(function(data){ 
+            console.log(data);
+            data=JSON.parse(data);
+            recieved_data=data[0];
+            console.log(recieved_data)
+            if (recieved_data.length > 0 & recieved_data!={})
+            {
+            for(i=0; i < recieved_data.length; i++)
+{
+    let text=recieved_data[i]['text'];
+    let time=recieved_data[i]['time'];
+    mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${text}
+                    <span class="badge badge-primary badge-pill">${time}</span>
+                </li>`;
+    $('#items').append(mystr);
+    }
+            }
+            else{
+                mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
+                    Sorry No Orders For this order Id and Email id.
+                </li>`;
+    $('#items').append(mystr);
+            } 
+        
+
+// ordered items details
+cart = JSON.parse(data[1]);
+console.log(cart);
+for(item in cart)
+{
+    
+    let name=cart[item][1];
+    let qty=cart[item][0];
+    mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${name}
+                    <span class="badge badge-primary badge-pill">${qty}</span>
+                </li>`
+    $('#itemslist').append(mystr) //we can also user .innerHtml here
+}
+});
+        event.preventDefault(); //prevents page from reloading
+    });
+</script>
+{% endblock%}
