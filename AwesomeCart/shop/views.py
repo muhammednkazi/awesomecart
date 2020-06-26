@@ -3,6 +3,10 @@ from django.http import HttpResponse
 from .models import product,contactus_table,Order,OrderUpdate
 from math import ceil
 import json
+from paytmfolder import Checksum
+MERCHANT_KEY = '__I12u_i59uD5h37'
+#eliminating csrf token for paytm post request
+from django.views.decorators.csrf import csrf_exempt 
 
 # Create your views here.
 def index(request):
@@ -79,7 +83,21 @@ def checkout(request):
         addOrderUpdate.save()
         thank=True #flag for order is placed
         id = order.order_id #order id of the order placed, fetching it from database
-        return render(request,'shop/checkout.html',{'thank':thank,'id':id})
+        #return render(request,'shop/checkout.html',{'thank':thank,'id':id})
+        # Request paytm to transfer the amount to your account after payment by user
+        # CwWJeb23811036683351, WorldP64425807474247
+        param_dict = {
+                'MID': 'LrqHyG13540583068310',             
+                'ORDER_ID': str(order.order_id),
+                'TXN_AMOUNT': str(amount),
+                'CUST_ID': email,
+                'INDUSTRY_TYPE_ID': 'Retail',
+                'WEBSITE': 'DIYtestingweb',
+                'CHANNEL_ID': 'WEB',
+                'CALLBACK_URL':'http://127.0.0.1:8000/shop/handlerequest/',
+        }
+        param_dict['CHECKSUMHASH']=Checksum.generate_checksum(param_dict,MERCHANT_KEY)
+        return render(request,'shop/paytm.html',{'param_dict':param_dict})
     return render(request,'shop/checkout.html')
 
 def track(request):
@@ -104,3 +122,11 @@ def track(request):
             return HttpResponse(f'{e}')
         
     return render(request,'shop/track.html')
+
+@csrf_exempt
+def handlerequest(request):
+    #handling paytm post request
+    return HttpResponse("done")
+
+def paytm(request):
+    pass
