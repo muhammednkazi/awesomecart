@@ -1,0 +1,54 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}Track Your Orders{% endblock %}
+{%block body %}
+<div class="container">
+    <div class="col">
+        <h2 class="text-center ">Payment status regarding your<i> Order Id: {{response.ORDERID}}</i></h2>
+        {%if response.RESPCODE == '01'%}
+        <h3 class="text-center">Order Successful</h3>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key,value in response.items %}
+                    <!--looping in dictionary items-->
+                    {%if key != 'MID'%}
+                    <!--not showing merchant id-->
+                    <tr>
+                        <td>{{forloop.counter }}</td>
+                        <!--no. of item-->
+                        <td>{{key}}</td>
+                        <td>{{value}}</td>
+                    </tr>
+                    {%endif%}
+                    {%endfor%}
+
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+        {%else%}
+        <h3>Order UnSuccessful</h3>
+        {%endif%}
+    </div>
+</div>
+
+
+{%endblock%}
+
+{%block js%}
+<script>
+
+</script>
+{% endblock%}

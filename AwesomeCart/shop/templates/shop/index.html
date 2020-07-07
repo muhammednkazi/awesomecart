@@ -1,4 +1,6 @@
-{% extends 'shop/basic.html' %} <!-- inheriting from basic.html-->
+{% extends 'shop/basic.html' %}
+<!-- inheriting from basic.html-->
+{%block title%}Shop | Awesome Cart{% endblock %}
 {% block css %}
 .col-md-3
 {
@@ -47,14 +49,17 @@ padding-right: 0;
 
 {% block body %}
 {% load static %}
-<div class="container"> <!-- container div starts here -->
+<div class="container">
+    <!-- container div starts here -->
 
     {% for product_data, range, no_of_slides in allprods %}
     <h5 class="my-4">Flash Sale On {{product_data.0.category}} - Recommended Items</h5>
-    <div class="row"> <!-- row div starts here -->
+    <div class="row">
+        <!-- row div starts here, one row contains only one carousel -->
 
         <!-- carousel div starts below -->
         <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">
+            <!--slide indicator below-->
             <ul class="carousel-indicators">
                 <li data-target="#demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
 
@@ -65,11 +70,10 @@ padding-right: 0;
 
             <!-- slideshow div starts here -->
             <div class="container carousel-inner no-padding">
-                <!-- First slideshow item div starts below -->
+                <!-- First 4 slideshow item div starts below -->
                 <div class="carousel-item active">
-
-
                     {% for i in product_data %}
+                    <!--only 4 items will be displayed in slider, 5th item onwards new slide will display items-->
                     <div class="col-xs-3 col-sm-3 col-md-3">
 
                         <!-- card div starts below -->
@@ -78,153 +82,159 @@ padding-right: 0;
                             <div class="card-body">
                                 <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name}}</h5>
                                 <p class="card-text">{{i.desc|slice:"0:25"}}..</p>
-                                <h6 class="card-title" >MRP. <span id="pricepr{{i.id}}">{{i.price}}</span></h6> 
-                                <span id="divpr{{i.id}}" class="divpr"> <!--this span tag will display plus minus button when clicked on add to cart-->
-                                <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
+                                <h6 class="card-title">MRP. <span id="pricepr{{i.id}}">{{i.price}}</span></h6>
+                                <span id="divpr{{i.id}}" class="divpr">
+                                    <!--this span tag will display plus minus button when clicked on add to cart-->
+                                    <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
                                 </span>
-                                <a href="/shop/productview/{{i.id}}"><button id="qv{{i.id}}" class="btn btn-primary cart">Quick View</button></a>
+                                <a href="/shop/productview/{{i.id}}"><button id="qv{{i.id}}"
+                                        class="btn btn-primary cart">Quick View</button></a>
                             </div>
                         </div> <!-- card div ends here -->
                     </div>
                     {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
-                </div> <!-- First  slideshow item div ends here -->
+                </div> <!-- First 4  slideshow item div ends here -->
 
-                <div class="carousel-item"> <!--second and so on slideshow item div starts here -->
+                <div class="carousel-item">
+                    <!--fifth and so on item slideshow div starts here -->
                     {% endif %}
                     {% endfor %}
-                </div> <!--second and so on slideshow div ends here -->
+                </div>
+                <!--second and so on slideshow div ends here -->
 
 
             </div> <!-- slideshow div ends here -->
 
 
-        <!-- left and right controls for the slide -->
-        <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </a>
-        <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </a>
-            </div> <!-- carousel div ends here -->
+            <!-- left and right controls for the slide -->
+            <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </a>
+            <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </a>
+        </div> <!-- carousel div ends here -->
 
     </div> <!-- row div ends here -->
-{% endfor %}
-</div>  <!-- container div ends here -->
+    {% endfor %}
+</div> <!-- container div ends here -->
 {% endblock %}
 
 {% block js %}
 <script>
-
-//cart is key,value pair
-//key is id of product
-//value is no. of times it has been clicked
-//find out the cart items from localStorage
-if(localStorage.getItem('cart') == null){
-//if there is no such key , we are creating a key.
-var cart = {}; //creating a key named as cart
-}
-else
-{
-cart = JSON.parse(localStorage.getItem('cart'));
-updateCart(cart);
-}
-
-//jquery selector below
-//if add to cart button is clicked, add/increment the cart
-$('.divpr').on("click","button.cart",function(){
-var idstr = this.id.toString();
-
-if (cart[idstr] !=undefined){ //if the clicked item is already in the cart
-    cart[idstr][0] = cart[idstr][0] + 1; //setting value of idstr i.e quantity
-}
-else //if the clicked item is not in the cart
-{
-    qty=1; 
-    name=document.getElementById('name'+idstr).innerHTML; //fetching name of product
-    price=document.getElementById('price'+idstr).innerHTML; //fetching name of product
-    cart[idstr] = [qty,name,parseInt(price)]; //an array of 2 values
-}
-updateCart(cart);
-});
-
-//add popover to cart in navbar
-$('#popcart').popover();
-
-
-//displaying message when clicked on the button in the navbar
-updatePopover(cart); //calling updatePopover function to update the popover
-
-function updatePopover(cart)
-{
-    var popoverdata="<h6>Your Cart Items:</h6>"
-    var i=1; //to display cart items no. wise
-    for (var item in cart)
-    {   
-                                      //1. cup Qty: 5
-        popoverdata=popoverdata + " " + i + ". " + document.getElementById('name' + item).innerHTML + " Qty: " + cart[item][0] + "<br>";
-        i=i+1;
+    //cart is key,value pair
+    //key is id of product
+    //value is no. of times it has been clicked
+    //find out the cart items from localStorage
+    if (localStorage.getItem('cart') == null) {
+        //if there is no such key , we are creating a key.
+        var cart = {}; //creating a key named as cart
+    } else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        updateCart(cart);
     }
-    popoverdata = popoverdata + "<a href='/shop/checkout'><button class='btn btn-primary'>CheckOut</button></a>  <button class='btn btn-primary' onclick='clearCart()'>Clear Cart</button> ";
-    //console.log(popoverdata);
-    document.getElementById("popcart").setAttribute('data-content',popoverdata);
-    $('#popcart').popover('show');
-}
 
-function clearCart()
-{   
-    //in this function we are not passing cart
-    //we are PARSING the cart
-    //because we are calling this function by clicking on the button
-    //and hence this fucntion cannot be a parameterized function
-    cart = JSON.parse(localStorage.getItem('cart'));
-    for (var item in cart)
-    {
-        document.getElementById('div'+item).innerHTML = "<button id='"+item+"' class='btn btn-primary'>Add To Cart</button>";
-    }
-    localStorage.clear();
-    cart={};
-    updateCart(cart);
-}
+    //jquery selector below
+    //if add to cart button is clicked, add/increment the cart
+    $('.divpr').on('click', 'button.cart', function(){
+        var idstr = this.id.toString();
 
-function updateCart(cart) {
-    var sum=0; //to display total no. of products
-    for (var item in cart) { //iterates every key in the cart and not value,e.g pr3
-        sum=sum + cart[item][0]; //adding quantity of every product
-        //e.g divpr2
-        document.getElementById('div' + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "''>" + cart[item][0] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>";
+        if (cart[idstr] != undefined) { //if the clicked item is already in the cart
+            cart[idstr][0] = cart[idstr][0] + 1; //setting value of idstr i.e quantity
+        } else //if the clicked item is not in the cart
+        {
+            qty = 1; //adding 1st quantity of that product
+            name = document.getElementById('name' + idstr).innerHTML; //fetching name of product
+            price = document.getElementById('price' + idstr).innerHTML; //fetching name of product
+            cart[idstr] = [qty, name, parseInt(price)]; //an array of 2 values
         }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    document.getElementById('cartlength').innerHTML = sum;
-    console.log(cart);
-    updatePopover(cart);
-}
+        updateCart(cart);
+    });
 
-// If plus or minus button is clicked, change the cart as well as the display value
-$('.divpr').on("click", "button.minus", function() {
-    //if id divpr is clicked which is having button class as minus, this function will run
-    a = this.id.slice(5, );
-    //e.g:  minuspr2, removing minus and storing only pr2 in a
-    cart[a][0] = cart[a][0] - 1;
-    cart[a][0] = Math.max(0, cart[a][0]);
-    if (cart[a][0] == 0){ //if cart item is 0 , this function will remove that item from the cart
-        document.getElementById('div' + a).innerHTML = '<button id="'+a+'" class="btn btn-primary cart">Add to Cart</button>';
-        delete cart[a];
+    //add popover to cart in navbar
+    $('#popcart').popover();
+
+
+    //displaying message when clicked on the button in the navbar
+    updatePopover(cart); //calling updatePopover function to update the popover
+
+
+    function updatePopover(cart) {
+        var popoverdata = "<h6>Your Cart Items:</h6>"
+        var i = 1; //to display cart items no. wise
+        for (var item in cart) {
+            //1. cup Qty: 5
+            popoverdata = popoverdata + " " + i + ". " + document.getElementById('name' + item).innerHTML + " Qty: " +
+                cart[item][0] + "<br>";
+            i = i + 1;
+        }
+        popoverdata = popoverdata +
+            "<a href='/shop/checkout'><button class='btn btn-primary'>CheckOut</button></a>  <button class='btn btn-primary' onclick='clearCart()'>Clear Cart</button> ";
+        //console.log(popoverdata);
+        
+
+        document.getElementById("popcart").setAttribute('data-content', popoverdata);
+        $('#popcart').popover('show');
+        
     }
-    else{ 
+
+    function clearCart() {
+        //in this function we are not passing cart
+        //we are PARSING the cart
+        //because we are calling this function by clicking on the button
+        //and hence this fucntion cannot be a parameterized function
+        cart = JSON.parse(localStorage.getItem('cart'));
+        for (var item in cart) {
+            document.getElementById('div' + item).innerHTML = "<button id='" + item +
+                "' class='btn btn-primary cart'>Add To Cart</button>";
+        }
+        localStorage.clear();
+        cart = {};
+        updateCart(cart);
+    }
+
+    //when add to cart button is clicked, plus minus button will appear
+    function updateCart(cart) {
+        var sum = 0; //to display total no. of products
+        for (var item in cart) { //iterates every key in the cart and not value,e.g pr3
+            sum = sum + cart[item][0]; //adding quantity of every product
+            //e.g divpr2
+            document.getElementById('div' + item).innerHTML = "<button id='minus" + item +
+                "' class='btn btn-primary minus'>-</button> <span id='val" + item + "'>" + cart[item][0] +
+                "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>";
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        document.getElementById('cartlength').innerHTML = sum;
+        console.log(cart);
+        updatePopover(cart);
+    }
+
+    // If plus or minus button is clicked, change the cart as well as the display value
+    $('.divpr').on("click", "button.minus", function () {
+        //if id divpr is clicked which is having button class as minus, this function will run
+        a = this.id.slice(5, );
+        //e.g:  minuspr2, removing minus and storing only pr2 in a variable
+        cart[a][0] = cart[a][0] - 1;
+        cart[a][0] = Math.max(0, cart[a][0]);
+        if (cart[a][0] == 0) { //if cart item is 0 , this function will remove that item from the cart
+            document.getElementById('div' + a).innerHTML = 
+            "<button id='" + a + "' class='btn btn-primary cart'>Add to Cart</button>";
+            delete cart[a];
+        } else {
+            document.getElementById('val' + a).innerHTML = cart[a][0];
+        }
+        updateCart(cart);
+    });
+
+    //if plus button is clicked, change the cart as well as the display value
+    $('.divpr').on("click", "button.plus", function () {
+        //if id divpr is clicked which is having button class as plus, this function will run
+        a = this.id.slice(4, );
+        //e.g:  pluspr2, removing plus and storing only pr2 in a
+        cart[a][0] = cart[a][0] + 1; //incrementing the cart item's value
+        cart[a][0] = Math.max(0, cart[a][0]); //mininum quantity of a product cannot be less than zero.
         document.getElementById('val' + a).innerHTML = cart[a][0];
-    }
-    updateCart(cart);
-});
-
-//if minus button is clicked, change the cart as well as the display value
-$('.divpr').on("click", "button.plus", function() {
-    //if id divpr is clicked which is having button class as plus, this function will run
-    a = this.id.slice(4, );
-    //e.g:  pluspr2, removing plus and storing only pr2 in a
-    cart[a][0] = cart[a][0] + 1; //incrementing the cart item's value
-    cart[a][0] = Math.max(0, cart[a][0]); //mininum quantity of a product cannot be less than zero.
-    document.getElementById('val' + a).innerHTML = cart[a][0];
-    updateCart(cart); //calling updatecart function
-});    
+        updateCart(cart); //calling updatecart function
+    });
 </script>
 {% endblock %}

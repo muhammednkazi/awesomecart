@@ -1,0 +1,108 @@
+{%extends 'blog/basic.html'%}
+{%block title%} {{post.title}} {%endblock%}
+{%block body%}
+
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-md-8 blog-main">
+      <h3 class="pb-4 mb-4 font-italic border-bottom">
+        {{post.title}}
+      </h3>
+
+      <div class="blog-post">
+        <h2 class="blog-post-title">{{post.heading0}}</h2>
+        <p class="blog-post-meta">{{post.pub_date}} by <a href="#">Mark</a></p>
+
+        <p>{{post.content0}}</p>
+        <hr>
+
+        <h2>{{post.heading1}}</h2>
+        <p>{{post.content1}}</p>
+
+        <!--fb likes-->
+        <div class="fb-like" data-href="http://127.0.0.1:8000/blog/blogpost/{{post.post_id}}" data-width="" data-layout="standard" data-action="like" data-size="large" data-share="true"></div>
+        <!--fb comments-->
+        <div class="fb-comments" data-href="http://127.0.0.1:8000/blog/blogpost/{{post.post_id}}" data-numposts="5" data-width=""></div>
+      </div><!-- /.blog-post -->
+
+    </div><!-- /.blog-main -->
+
+
+
+
+
+    <aside class="col-md-4 blog-sidebar">
+      <div class="p-4 mb-3 bg-light rounded">
+        <h4 class="font-italic">About</h4>
+        <p class="mb-0">My Awesome Cart <em>is an Ecommerce Website</em>for online shopping</p>
+      </div>
+
+
+
+      <div class="p-4">
+        <h4 class="font-italic">My Awesome Cart:-</h4>
+        <ol class="list-unstyled">
+          <li><a href="#">GitHub</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Facebook</a></li>
+        </ol>
+      </div>
+    </aside><!-- /.blog-sidebar -->
+  </div>
+
+  
+  <div class="row mt-4">
+  {%if prev_post != '' %}
+    <div class="col-md-6">
+    <h6>Previous Post</h6>
+      <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-primary">{{prev_post.category}}</strong>
+          <h3 class="mb-0" id="{{i.post_id}}">{{prev_post.title}}</h3>
+          <div class="mb-1 text-muted">{{prev_post.pub_date}}</div>
+          <p class="card-text mb-auto">{{prev_post.heading0}}</p>
+          <a href="/blog/blogpost/{{prev_post.post_id}}" class="stretched-link">Continue reading</a>
+        </div>
+        <div class="col-auto d-none d-lg-block">
+          <rect width="100%" height="100%" fill="#55595c"><img class="bd-placeholder-img"
+              src="/media/{{prev_post.thumbnail}}" width="200" height="250" preserveAspectRatio="xMidYMid slice"
+              focusable="false" role="img"></rect>
+          <!--<svg class="bd-placeholder-img" width="200" height="250" xmlns="/media/{{i.thumbnail}}" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title></title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em"></text></svg>-->
+        </div>
+      </div>
+    </div>
+    {%endif%}
+
+    {%if next_post != '' %}
+    <div class="col-md-6">
+    <h6 class="text-right">Next Post</h6>
+      <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-primary">{{next_post.category}}</strong>
+          <h3 class="mb-0" id="{{i.post_id}}">{{next_post.title}}</h3>
+          <div class="mb-1 text-muted">{{next_post.pub_date}}</div>
+          <p class="card-text mb-auto">{{next_post.heading0}}</p>
+          <a href="/blog/blogpost/{{next_post.post_id}}" class="stretched-link">Continue reading</a>
+        </div>
+        <div class="col-auto d-none d-lg-block">
+          <rect width="100%" height="100%" fill="#55595c"><img class="bd-placeholder-img"
+              src="/media/{{next_post.thumbnail}}" width="200" height="250" preserveAspectRatio="xMidYMid slice"
+              focusable="false" role="img"></rect>
+          <!--<svg class="bd-placeholder-img" width="200" height="250" xmlns="/media/{{i.thumbnail}}" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title></title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em"></text></svg>-->
+        </div>
+      </div>
+    </div>
+    {%endif%}
+
+  </div>
+
+</div><!--container div ends here-->
+
+
+{%endblock%}
+
+{%block js%}
+<script>
+  console.log(post);
+</script>
+{%endblock%}

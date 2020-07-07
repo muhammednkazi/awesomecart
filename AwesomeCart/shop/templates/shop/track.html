@@ -27,12 +27,13 @@
         <h2>Details are Shown Below:-</h2>
         <div>
             <ul class="list-group" id="items">
-                <!--Here ordered items will be displayed using javascript-->
+                <!--Here ordered items tracking status will be displayed using javascript-->
             </ul>
         </div>
         <h2>Your Order Details</h2>
         <div class="my-4">
             <ul class="list-group" id="itemslist">
+             <!--Here ordered items list will be displayed using javascript-->
             </ul>
         </div>
     </div>
@@ -44,8 +45,8 @@
 {%block js%}
 <script>
     $('#trackerform').submit(function(event){ //when submit button is clicked, this function will run
-        $('#items').empty(); //clearing the previously displayed order details, if any
-        $('#itemslist').empty(); //clearing the previously displayed order details, if any
+        $('#items').empty(); //clearing the previously displayed order tracking status details, if any
+        $('#itemslist').empty(); //clearing the previously displayed order details of items list, if any
         //below we are creating dictionary(json) of values to be submitted
         var formdata={'order_id':$('input[name=order_id]').val(),
                     'email':$('input[name=email]').val(),
@@ -59,35 +60,30 @@
             url: '/shop/track/', //action of form
             data:formdata, //data to  be sent
             encode:true
-        })
+        }) //below is when data is brought from database
         .done(function(data){ 
             console.log(data);
-            data=JSON.parse(data);
-            recieved_data=data[0];
-            console.log(recieved_data)
-            if (recieved_data.length > 0 & recieved_data!={})
+            data=JSON.parse(data); //parsing json and storing in variable
+            console.log(data)
+            
+            if (data['status'] == 'success')
             {
-            for(i=0; i < recieved_data.length; i++)
-{
-    let text=recieved_data[i]['text'];
-    let time=recieved_data[i]['time'];
+                tracking_details=data['updates']; //updates contains order track details and timestamp
+            for(i=0; i < tracking_details.length; i++)
+            {
+    let text=tracking_details[i]['text']; //storing data in variable
+    let time=tracking_details[i]['time']; //storing data in variable
+    //below we are dynamically displaying the results
     mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
                     ${text}
                     <span class="badge badge-primary badge-pill">${time}</span>
                 </li>`;
-    $('#items').append(mystr);
+    $('#items').append(mystr); //ordered items tracking details
     }
-            }
-            else{
-                mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
-                    Sorry No Orders For this order Id and Email id.
-                </li>`;
-    $('#items').append(mystr);
-            } 
-        
 
-// ordered items details
-cart = JSON.parse(data[1]);
+    //list of ordered items
+cart = JSON.parse(data['itemsJson']); //parsing json and storing in variable
+//itemsJson contains list of ordered item 
 console.log(cart);
 for(item in cart)
 {
@@ -98,8 +94,18 @@ for(item in cart)
                     ${name}
                     <span class="badge badge-primary badge-pill">${qty}</span>
                 </li>`
-    $('#itemslist').append(mystr) //we can also user .innerHtml here
+    $('#itemslist').append(mystr) //displaying list of ordered items
 }
+
+            }
+           else//if(data['status'] == 'noitem')
+            { //if order id and email is not found in database
+                mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
+                    Sorry No Orders For this order Id and Email id.
+                </li>`;
+    $('#items').append(mystr); //ordered items tracking details
+            } 
+        
 });
         event.preventDefault(); //prevents page from reloading
     });

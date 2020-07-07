@@ -32,9 +32,34 @@ def index(request):
 
     param={'allprods':allprods}
 
-
     # param={'no_of_slides':no_of_slides,'range':range(1,no_of_slides),'data':product_data}
     return render(request,'shop/index.html',param)
+
+def searchMatch(searchquery,item):
+    if searchquery in item.product_name.lower() or searchquery in item.category.lower() or searchquery in item.desc.lower():
+        return True
+    else:
+        return False
+
+def search(request):
+    searchquery= request.GET.get('search')
+    allprods=[] #blank list
+    category_product=product.objects.values('category') #to fetch each category column and its values from database
+    category_values={item['category'] for item in category_product} #creating a set of only values of category.
+
+    for cat in category_values:
+        product_datatemp=product.objects.filter(category=cat) #fetching those products having category stored in the category_values
+        #we are adding items in the list that have matched with searched query.
+        searchitem=[item for item in product_datatemp if searchMatch(searchquery,item)]
+        no_of_products=len(searchitem) #length of each category's products.
+        no_of_slides=no_of_products//4 + ceil((no_of_products/4)-(no_of_products//4))
+        if no_of_products != 0:
+            allprods.append([searchitem,range(1,no_of_slides),no_of_slides])
+
+    param={'allprods':allprods,"msg": ""}
+    if len(allprods) == 0 or len(searchquery)<2:
+        param = {'msg': "Please make sure to enter relevant search query"}
+    return render(request,'shop/search.html',param)
 
 def aboutus(request):
     return render(request,'shop/aboutus.html')
@@ -53,8 +78,7 @@ def contactus(request):
         return render(request,'shop/contactus.html',{'thank':thank,'id':id})
     return render(request,'shop/contactus.html')
 
-def search(request):
-    return render(request,'shop/search.html')
+
 
 def productview(request,myid):
     #fetching product details using id
@@ -106,27 +130,44 @@ def track(request):
         email=request.POST.get('email','')
         try:
             ordercheck=Order.objects.filter(order_id=order_id,email=email) #fetching entered order id is available or not
-            print('hello')
         
             if len(ordercheck) > 0: #if we get order data from database
-                fetchupdates=OrderUpdate.objects.filter(order_id=order_id) #fetching all updates of order id
-                print(fetchupdates)
+                fetchupdates=OrderUpdate.objects.filter(order_id=order_id) #fetching all updates of order id from orderupdate table
+                #print(fetchupdates)
                 updates_list=[] #a list where we will store description and timestamp of orders
-                for item in fetchupdates:
-                    updates_list.append({'text':item.update_desc,'time':item.timestamp}) #creating dictionary
-                    json_obj = json.dumps([updates_list,ordercheck[0].items_json],default=str) #converting python dictionary into json object
-                return HttpResponse(json_obj)
+                for item in fetchupdates: #storing values in updates_list from fetchupdates
+                    updates_list.append({'text':item.update_desc,'time':item.timestamp}) #creating list of dictionaries
+                    json_obj = json.dumps({"status":"success","updates":updates_list,"itemsJson":ordercheck[0].items_json},default=str) #converting python dictionary into json object
+                return HttpResponse(json_obj) #sending json to html file.
             else:
-                return HttpResponse('{}') #if no order is found, we will send blank 
+                return HttpResponse('{"status":"noitem"}') #if no order is found, we will send blank 
         except Exception as e: #if there is any problem in transporting, this exception will generate
-            return HttpResponse(f'{e}')
+            return HttpResponse({"status":"error"})
         
     return render(request,'shop/track.html')
 
 @csrf_exempt
 def handlerequest(request):
-    #handling paytm post request
-    return HttpResponse("done")
+    #paytm will send post request after transaction
+    form=request.POST #storing data in form variable
+    response_dict={} #dictionary for storing key, values 
+    for i in form.keys(): 
+        response_dict[i]=form[i] #storing data in response_dict
+        if i=='CHECKSUMHASH': 
+            checksumvar=form[i] #storing value of checksumhash in checksumvar
+
+    #to check whether transaction was not attacked by hacker
+    verify=Checksum.verify_checksum(response_dict,MERCHANT_KEY,checksumvar)
+    if verify:
+        if response_dict['RESPCODE']=='01':
+            print('order successful')
+        else:
+            #if order is unsuccess, printing with error
+            print('order was not successful because '+ response_dict['RESPMSG']) 
+    print(response_dict)
+    return render(request, 'shop/paymentstatus.html',{'response':response_dict})        
+
+
 
 def paytm(request):
     pass

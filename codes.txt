@@ -28,10 +28,11 @@ to create an app in our django project:-
 python manage.py startapp 'app_name'
 
 whenever we create an app:
-we should create urls.py file in it. because it is not availble bydefualt
+we should create urls.py, file in it. because it is not availble bydefualt
 
 to create an admin for the project:-
 an admin can view database also
+we can multiple superusers who can access the same database
 python manage.py createsuperuser
 
 
@@ -76,6 +77,11 @@ to wrrite python code in html file:-
 {% write here %}
 
 to inherit an html file:-
-{%extends 'filename.html''%}
+{%extends 'filename.html'%}
 this will bring all contents the of that file in to the new file.
+
+to change password of django admin:-
+python manage.py changepassword user_name
+note:- user_name is the username of that account.
+after that it will ask you to enter new password
 
