@@ -5,15 +5,15 @@ to check version of django:-
 python -m django --version
 
 to create a new django project:-
-1.create new project on pycharm
-2.open pycharm terminal and type:-
-python django-admin startproject 'project_name'
+1.open terminal in the folder where you want to create and type:-
+django-admin startproject 'project_name'
 
 to run the django server:-
 python manage.py runserver
 
 urls.py:-
 in this file all the urls are stored.
+an app doesnt have urls.py bydefualt, we have to create it.
 
 views.py:-
 in this file we write functions for the url.
@@ -21,14 +21,12 @@ in this file we write functions for the url.
 templates folder:-
 in this folder we store all the html files.
 this folder should be created in the django project folder
-ex.:- MyProject/DjangoProject/templates
+ex.:- MyProject/templates
 
 
 to create an app in our django project:-
 python manage.py startapp 'app_name'
 
-whenever we create an app:
-we should create urls.py, file in it. because it is not availble bydefualt
 
 to create an admin for the project:-
 an admin can view database also
@@ -43,11 +41,14 @@ python manage.py migrate:-
 this command commits the changes stored in migrations folder that were created using the above command.
 
 models.py:-
+this file is present only in apps.
 in this file we create and store the database tables.
 
 admin.py:-
+this file is presnt only in apps.
 a database table is'nt loaded until we register the table in this file.
 in this file we register the tables created in the models.py file.
+e.g:- admin.site.register('table_name')
 
 include():-
 this function is used when we want to redirect the url to the app url.
@@ -58,9 +59,8 @@ urls.py in the shop app folder will handle the request further.
 
 static:-
 static is a folder that has all the static text files,images,etc. that doesnt come from database.
-eg:- MyProject/DjangoProject/static folder
+eg:- MyProject/static folder
 
-note:-a project containing apps will have their own static folder in their directory.
 
 python shell commands on command prompt:-
 to fetch a table from the database:

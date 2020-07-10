@@ -24,6 +24,7 @@ class contactus_table(models.Model):
     phone=models.CharField(max_length=15,default="")
     email=models.CharField(max_length=70,default="")
     desc=models.TextField(max_length=500,default="")
+    timestamp=models.DateTimeField(auto_now_add=True,blank = True)
 
     # this function displays customer's name on the table rows.
     def __str__(self):
