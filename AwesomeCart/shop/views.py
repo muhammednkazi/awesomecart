@@ -78,8 +78,6 @@ def contactus(request):
         return render(request,'shop/contactus.html',{'thank':thank,'id':id})
     return render(request,'shop/contactus.html')
 
-
-
 def productview(request,myid):
     #fetching product details using id
     product_data = product.objects.filter(id=myid)
@@ -166,8 +164,6 @@ def handlerequest(request):
             print('order was not successful because '+ response_dict['RESPMSG']) 
     print(response_dict)
     return render(request, 'shop/paymentstatus.html',{'response':response_dict})        
-
-
 
 def paytm(request):
     pass

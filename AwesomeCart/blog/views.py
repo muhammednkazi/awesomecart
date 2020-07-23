@@ -9,7 +9,6 @@ def index(request):
     #     print(i)
     return render(request,'blog/index.html',{'allblogs':allblogs})
 
-
 def blogpost(request,id):
     #sending the requested blogpost
     post=Blogpost.objects.filter(post_id=id)[0]
