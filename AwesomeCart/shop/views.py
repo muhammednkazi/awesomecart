@@ -24,7 +24,7 @@ def index(request):
 
     for cat in category_values:
         product_data=product.objects.filter(category=cat) #fetching those products having category stored in the category_values
-        # print(product_data)
+        # print("Details:- ",product_data)
         no_of_products=len(product_data) #length of each category's products.
         # print(no_of_products)
         no_of_slides=no_of_products//4 + ceil((no_of_products/4)-(no_of_products//4))
@@ -131,11 +131,14 @@ def track(request):
         
             if len(ordercheck) > 0: #if we get order data from database
                 fetchupdates=OrderUpdate.objects.filter(order_id=order_id) #fetching all updates of order id from orderupdate table
-                #print(fetchupdates)
+                print(fetchupdates)
+                # print(fetchupdates.update_desc)
                 updates_list=[] #a list where we will store description and timestamp of orders
                 for item in fetchupdates: #storing values in updates_list from fetchupdates
                     updates_list.append({'text':item.update_desc,'time':item.timestamp}) #creating list of dictionaries
                     json_obj = json.dumps({"status":"success","updates":updates_list,"itemsJson":ordercheck[0].items_json},default=str) #converting python dictionary into json object
+                print(updates_list)
+                print(json_obj)
                 return HttpResponse(json_obj) #sending json to html file.
             else:
                 return HttpResponse('{"status":"noitem"}') #if no order is found, we will send blank 
@@ -163,7 +166,7 @@ def handlerequest(request):
             #if order is unsuccess, printing with error
             print('order was not successful because '+ response_dict['RESPMSG']) 
     print(response_dict)
-    return render(request, 'shop/paymentstatus.html',{'response':response_dict})        
+    return render(request,'shop/paymentstatus.html',{'response':response_dict})        
 
 def paytm(request):
     pass
